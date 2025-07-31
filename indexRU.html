@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mines</title>
+    <link rel="stylesheet" href="./index_files/mines.css">
+    <script src="./index_files/script.js" defer=""></script>
+    <style>
+        /* Hide the default header */
+        header {
+            display: none;
+        }
+
+        .header-content {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0; /* Удален отступ снизу */
+            margin-top: 100px; /* Увеличен отступ сверху для логотипа, чтобы опустить его ниже */
+        }
+
+        .logo-container {
+            display: flex; /* Use flex to center content */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically (if needed) */
+            width: 100%; /* Растягиваем контейнер на всю доступную ширину */
+            max-width: 350px; /* Сделан чуть-чуть меньше, чтобы соответствовать ширине игрового поля */
+            height: auto; /* Adjust height automatically */
+            margin: 0 auto; /* Center the container */
+            padding-bottom: 0; /* Удален отступ снизу */
+        }
+
+        .logo-container img {
+            max-width: 100%; /* Make image scale within container */
+            height: auto;
+            display: block;
+            animation: bounce 0.3s ease infinite alternate; /* Apply animation to the logo */
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .logo-container {
+                max-width: 300px; /* Уменьшена максимальная ширина для мобильных */
+            }
+        }
+
+        body {
+            padding-top: 20px; /* Overall top padding */
+            margin: 0; /* Убираем стандартные отступы body */
+            background-image: url('fonmain.png'); /* Устанавливаем фоновое изображение */
+            background-size: cover; /* Масштабирует изображение так, чтобы оно покрывало весь элемент */
+            background-position: center; /* Центрирует изображение */
+            background-repeat: no-repeat; /* Предотвращает повторение изображения */
+            background-attachment: fixed; /* Фиксирует фоновое изображение при прокрутке */
+        }
+
+        .flex.justify-center.align-middle {
+            margin-top: -70px; /* Отступ сверху удален для этого элемента */
+            position: relative; /* Needed for absolute positioning of the mask */
+            display: flex; /* Явно устанавливаем flex-контейнер */
+            justify-content: center; /* Центрируем содержимое по горизонтали */
+            align-items: center; /* Центрируем содержимое по вертикали (если применимо) */
+            width: 100%; /* Занимаем всю доступную ширину */
+        }
+
+        .cells-board-wrapper {
+            position: relative; /* Needed for positioning relative to this element */
+            z-index: 5; /* Ensure cells board is below the mask initially */
+            margin: 0 auto; /* Центрируем сам cells-board-wrapper */
+            max-width: 400px; /* Ограничиваем ширину для центрирования и адаптивности */
+        }
+
+      .cells-board-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 15px 5px rgba(0, 173, 255, 0.6); /* Базовое свечение */
+    z-index: 10;
+    pointer-events: none;
+    animation: glow-pulse 2s infinite alternate; /* Применение анимации */
+}
+
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 15px 5px rgba(0, 173, 255, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 25px 10px rgba(0, 173, 255, 1); /* Усиленное свечение */
+    }
+}
+
+        /* Анимация для логотипа */
+        @keyframes bounce {
+            0% {
+                transform: translateY(0px);
+            }
+            100% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Объявляем пользовательский шрифт */
+        @font-face {
+            font-family: 'Intro'; /* Название, которое вы будете использовать для шрифта */
+            src: url('Intro.otf') format('opentype'); /* Путь к вашему файлу шрифта и его формат */
+            font-weight: normal; /* Или bold, если это жирный вариант шрифта */
+            font-style: normal;
+        }
+
+        /* Применяем шрифт к надписи ПОЛУЧИТЬ СИГНАЛ */
+        .app-button span {
+            font-family: 'Intro', sans-serif; /* Используем ваш шрифт, с sans-serif в качестве запасного */
+            font-size: 1.1em; /* Уменьшен размер шрифта */
+            font-weight: bold; /* Makes the font bold */
+        }
+
+        /* Изменения для надписи "КОЛ-ВО ЛОВУШЕК" */
+        .select-traps__title {
+            font-family: 'Intro', sans-serif; /* Применяем тот же шрифт */
+            font-size: 0.9em; /* Увеличен размер шрифта */
+            display: block;
+            margin-bottom: 13px; /* Вернули предыдущий отступ */
+            white-space: nowrap;
+            margin-top: -35px; /* Поднято еще выше */
+            font-weight: bold; /* Делаем жирным, как "ПОЛУЧИТЬ СИГНАЛ" */
+        }
+
+        .select-traps__traps_amount {
+            font-family: 'Intro', sans-serif; /* Применяем тот же шрифт */
+            font-size: 1.5em; /* Увеличен размер цифры */
+            display: block;
+            font-weight: bold;
+            position: relative; /* Добавлено для независимого позиционирования */
+            top: 6px; /* Пример: 0px по вертикали от исходной позиции */
+            left: 0px; /* Пример: 0px по горизонтали от исходной позиции */
+        }
+
+        .select-traps__content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Стилизация стрелок */
+        .select-traps__prev-arrow-btn,
+        .select-traps__next-arrow-btn {
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .select-traps__arrow-icon {
+            width: 20px; /* Увеличена ширина стрелок */
+            height: 28px; /* Увеличена высота стрелок */
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-content">
+        <div class="logo-container">
+            <img src="1winxmineslogo.png" alt="Logo">
+        </div>
+    </div>
+
+    <div id="resetPopup" class="popup hidden">
+        <div class="popup-content">
+            <p id="popup-content"></p>
+            <div class="popup-buttons">
+                <button id="confirmReset"></button>
+                <button id="cancelReset"></button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-center align-middle">
+        <div class="cells-board-wrapper">
+            <div class="cells-board">
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_5450.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_11641.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_18337.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_24493.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_31201.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_37357.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_44065.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_50221.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_56929.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_63085.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_69793.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_75949.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_82645.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_89353.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_95509.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_102217.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_108373.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_115081.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_121237.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_127381.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_134077.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_140221.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_146917.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_153061.svg">
+                </button>
+                <button id="cellButton" type="button" class="cell">
+                    <img width="56" height="56" src="./index_files/image_159757.svg">
+                </button>
+                <div class="cells-board-mask">
+                    <div class="animated-highlight"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="select-traps status-bar__select-traps">
+            <button class="select-traps__prev-arrow-btn disabled:opacity-50" type="button" id="prev_preset_btn">
+                <svg class="select-traps__arrow-icon select-traps__arrow-icon_prev" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.92616 20.0002L10.7906 12.082L12.8584 10.0001L10.7906 7.91821L2.92616 0L0.858398 2.0819L8.72287 10.0001L0.858398 17.9183L2.92616 20.0002Z"></path>
+                </svg>
+            </button>
+            <div class="select-traps__content">
+                <span class="select-traps__title" data-i18n="traps">КОЛ-ВО ЛОВУШЕК</span>
+                <span class="select-traps__traps_amount" id="trapsAmount">1</span>
+            </div>
+            <button class="select-traps__next-arrow-btn disabled:opacity-50" type="button" id="next_preset_btn">
+                <svg class="select-traps__arrow-icon" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.92616 20.0002L10.7906 12.082L12.8584 10.0001L10.7906 7.91821L2.92616 0L0.858398 2.0819L8.72287 10.0001L0.858398 17.9183L2.92616 20.0002Z"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="flex flex-wrap flex-row mobile:flex-col mobile:gap-y-3"></div>
+        <div class="basis-1/2 pl-2 mobile:pl-0 mobile:basis-auto mobile:h-[3.25rem]">
+            <button id="playButton" type="button" class="app-button big games-blue-bg text-white cursor-pointer block h-full w-full">
+                <span data-i18n="play">ПОЛУЧИТЬ СИГНАЛ</span>
+            </button>
+        </div>
+    </div>
+    
+</body>
+</html>
